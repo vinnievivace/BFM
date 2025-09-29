@@ -3,34 +3,42 @@
 
 |                             Male                             |                            Female                            |                           Fluflet                            |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| <img width="33%" height="auto" alt="QmTQ68Jc9Kbq2GU82yu687uSHucZ3CcsjU9UR2E2tnibRg" src="https://github.com/user-attachments/assets/0c8a695b-7b42-45a9-a3ae-c7cb5308a298" style="display: block; margin: 0 auto;" /> | <img width="33%" height="auto" alt="mushy" src="https://github.com/user-attachments/assets/e04fd1e3-6644-43a1-b79a-01325a41dc18" style="display: block; margin: 0 auto;" /> | <img width="33%" height="auto" alt="babyZombie" src="https://github.com/user-attachments/assets/09a4273b-e481-4eb5-89c5-3868c0f0746b" style="display: block; margin: 0 auto;" /> |
+| <img width="100%" height="auto" alt="QmTQ68Jc9Kbq2GU82yu687uSHucZ3CcsjU9UR2E2tnibRg" src="https://github.com/user-attachments/assets/0c8a695b-7b42-45a9-a3ae-c7cb5308a298" style="display: block; margin: 0 auto;" /> | <img width="100%" height="auto" alt="mushy" src="https://github.com/user-attachments/assets/e04fd1e3-6644-43a1-b79a-01325a41dc18" style="display: block; margin: 0 auto;" /> | <img width="100%" height="auto" alt="babyZombie" src="https://github.com/user-attachments/assets/09a4273b-e481-4eb5-89c5-3868c0f0746b" style="display: block; margin: 0 auto;" /> |
 
 
 
 ###  Overview
 
-The introduction of **Fluflets** establishes a new generational NFT layer designed to increase the long-term value of the original **Fluf collection (10,000 supply: 7,000 male / 3,000 female)**.
+- The Fluflet generation introduces a new layer of value to the original **Fluf collection (10,000 supply: 7,000 male / 3,000 female)**. By tightly controlling breeding and evolution, Fluflets remain rare and desirable — while reinforcing the importance of parent Flufs.
 
-#### **Breeding Mechanics**
+  
 
-- Breeding requires **one male and one female Fluf**.
-- Each pair can produce a limited number of offspring, ensuring scarcity and preserving parent value.
-- Fluflets inherit a combination of traits from parents, with the potential for rare mutations.
+  #### **Breeding Mechanics**
 
-#### **Village Multiplier**
+  - Fluflets are created only through **one male + one female Fluf** pairing.
+  - Each Fluf (or pair) has a **strict lifetime limit** on how many Fluflets they can produce (e.g., 1–2 total).
+  - Breeding occurs only during **limited seasonal windows**, ensuring urgency and controlling supply.
+  - Not all eligible pairs are guaranteed a Fluflet each season — breeding may require access passes or a lottery mechanic, keeping outcomes scarce.
 
-- A Fluflet’s growth and rarity potential are influenced not only by its parents, but also by the **number of Flufs in the holder’s wallet** (“the village”).
-- Larger villages raise stronger Fluflets: holding multiple pairs increases the chance of superior evolution and rarer outcomes.
-- This mechanic directly incentivizes holding more Flufs, increasing floor value and strengthening parent desirability.
+  
 
-#### **Whale Control**
+  #### Village Multiplier**
 
-- To prevent extreme concentration of advantage, the multiplier effect caps at **7 pairs (14 Flufs)**.
-- Beyond this threshold, additional Flufs still enable more breeding cycles but do not further magnify growth/evolution speed.
-- This ensures balanced upside across holders, while still rewarding larger, committed collectors.
+  - A Fluflet’s growth and rarity potential are amplified by the **number of Flufs in the holder’s wallet** (the “village”).
+  - Larger villages raise stronger Fluflets, unlocking faster evolution, rarer traits, and occasional mutations.
+  - The multiplier caps at **7 pairs (14 Flufs)**. Beyond this, holders can still breed more Fluflets, but do not gain further evolutionary advantage — preventing whales from dominating supply.
 
-#### **Investor Value Proposition**
+  #### **Scarcity Controls**
 
-- **Parent Value Increase**: Owning male/female pairs becomes essential, driving demand for balanced holdings.
-- **Retention Mechanism**: Holders are incentivized to keep and grow their villages rather than flipping individual Flufs.
-- **Generational Expansion**: Fluflets create new scarcity without diluting parent value, embedding long-term sustainability into the ecosystem.
+  - **Max Supply Cap**: The total number of Fluflets will be strictly limited (e.g., no more than 5,000). Once reached, no more can be created.
+  - **Care Requirement**: Fluflets must be nurtured post-mint to mature. Neglected Fluflets risk devolving into common or “dust bunny” forms, creating a natural burn mechanism.
+  - **Trait Rarity**: Some advanced traits only emerge when rare Flufs are paired, reinforcing the premium value of uncommon parent traits.
+
+  
+
+  #### **Investor Value Proposition**
+
+  - **Parent Value Increase**: Fluf pairs (especially female Flufs) become essential for access to the next generation, driving up their market value.
+  - **Retention & Upside**: Holders are incentivized to accumulate and hold more Flufs to maximize breeding and evolution potential.
+  - **Balanced Economics**: The capped multiplier prevents whales from capturing outsized share while still rewarding larger collectors.
+  - **Long-Term Scarcity**: With tightly controlled supply, Fluflets remain rare, ensuring they are accretive to parent value rather than dilutive.
