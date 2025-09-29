@@ -3,7 +3,7 @@
 
 |                             Male                             |                            Female                            |                           Fluflet                            |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| <img width="100%" height="auto" alt="QmTQ68Jc9Kbq2GU82yu687uSHucZ3CcsjU9UR2E2tnibRg" src="https://github.com/user-attachments/assets/0c8a695b-7b42-45a9-a3ae-c7cb5308a298" style="display: block; margin: 0 auto;" /> | <img width="100%" height="auto" alt="mushy" src="https://github.com/user-attachments/assets/e04fd1e3-6644-43a1-b79a-01325a41dc18" style="display: block; margin: 0 auto;" /> | <img width="100%" height="auto" alt="babyZombie" src="https://github.com/user-attachments/assets/09a4273b-e481-4eb5-89c5-3868c0f0746b" style="display: block; margin: 0 auto;" /> |
+| <img width="100%" height="300px" alt="QmTQ68Jc9Kbq2GU82yu687uSHucZ3CcsjU9UR2E2tnibRg" src="https://github.com/user-attachments/assets/0c8a695b-7b42-45a9-a3ae-c7cb5308a298" style="display: block; margin: 0 auto; object-fit: cover;" /> | <img width="100%" height="300px" alt="mushy" src="https://github.com/user-attachments/assets/e04fd1e3-6644-43a1-b79a-01325a41dc18" style="display: block; margin: 0 auto; object-fit: cover;" /> | <img width="100%" height="300px" alt="babyZombie" src="https://github.com/user-attachments/assets/09a4273b-e481-4eb5-89c5-3868c0f0746b" style="display: block; margin: 0 auto; object-fit: cover;" /> |
 
 
 
@@ -22,7 +22,7 @@
 
   
 
-  #### Village Multiplier**
+  #### Village Multiplier
 
   - A Fluflet’s growth and rarity potential are amplified by the **number of Flufs in the holder’s wallet** (the “village”).
   - Larger villages raise stronger Fluflets, unlocking faster evolution, rarer traits, and occasional mutations.
