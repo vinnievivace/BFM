@@ -3,11 +3,11 @@
 
 |                             Male                             |                            Female                            |                           Fluflet                            |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| <img width="512" height="512" alt="QmTQ68Jc9Kbq2GU82yu687uSHucZ3CcsjU9UR2E2tnibRg" src="https://github.com/user-attachments/assets/0c8a695b-7b42-45a9-a3ae-c7cb5308a298" style="zoom:50%;" /> | <img width="512" height="512" alt="mushy" src="https://github.com/user-attachments/assets/e04fd1e3-6644-43a1-b79a-01325a41dc18" style="zoom:50%;" /> | <img width="1024" height="1024" alt="babyZombie" src="https://github.com/user-attachments/assets/09a4273b-e481-4eb5-89c5-3868c0f0746b" style="zoom:25%;" /> |
+| <img width="512" height="512" alt="QmTQ68Jc9Kbq2GU82yu687uSHucZ3CcsjU9UR2E2tnibRg" src="https://github.com/user-attachments/assets/0c8a695b-7b42-45a9-a3ae-c7cb5308a298" style="zoom:33%;" /> | <img width="512" height="512" alt="mushy" src="https://github.com/user-attachments/assets/e04fd1e3-6644-43a1-b79a-01325a41dc18" style="zoom:33%;" /> | <img width="1024" height="1024" alt="babyZombie" src="https://github.com/user-attachments/assets/09a4273b-e481-4eb5-89c5-3868c0f0746b" style="zoom:33%;" /> |
 
 
 
-###  Overview**
+###  Overview
 
 The introduction of **Fluflets** establishes a new generational NFT layer designed to increase the long-term value of the original **Fluf collection (10,000 supply: 7,000 male / 3,000 female)**.
 
