@@ -4,6 +4,7 @@
 |                             Male                             |                            Female                            |                           Fluflet                            |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | <img width="100%" height="300px" alt="QmTQ68Jc9Kbq2GU82yu687uSHucZ3CcsjU9UR2E2tnibRg" src="https://github.com/user-attachments/assets/0c8a695b-7b42-45a9-a3ae-c7cb5308a298" style="display: block; margin: 0 auto; object-fit: cover;" /> | <img width="100%" height="300px" alt="mushy" src="https://github.com/user-attachments/assets/e04fd1e3-6644-43a1-b79a-01325a41dc18" style="display: block; margin: 0 auto; object-fit: cover;" /> | <img width="100%" height="300px" alt="babyZombie" src="https://github.com/user-attachments/assets/09a4273b-e481-4eb5-89c5-3868c0f0746b" style="display: block; margin: 0 auto; object-fit: cover;" /> |
+| <img width="100%" height="300px" alt="Spotty Male" src="./images/spottyMale.png" style="display: block; margin: 0 auto; object-fit: cover;" /> | <img width="100%" height="300px" alt="Zebra Female" src="./images/zebraFemale.png" style="display: block; margin: 0 auto; object-fit: cover;" /> | <img width="100%" height="300px" alt="Fluflet" src="./images/fluflet.png" style="display: block; margin: 0 auto; object-fit: cover;" /> |
 
 
 
@@ -41,4 +42,22 @@
   - **Parent Value Increase**: Fluf pairs (especially female Flufs) become essential for access to the next generation, driving up their market value.
   - **Retention & Upside**: Holders are incentivized to accumulate and hold more Flufs to maximize breeding and evolution potential.
   - **Balanced Economics**: The capped multiplier prevents whales from capturing outsized share while still rewarding larger collectors.
-  - **Long-Term Scarcity**: With tightly controlled supply, Fluflets remain rare, ensuring they are accretive to parent value rather than dilutive.
+   - **Long-Term Scarcity**: With tightly controlled supply, Fluflets remain rare, ensuring they are accretive to parent value rather than dilutive.
+
+## Proof of Concept (POC)
+
+The technical implementation follows a streamlined pipeline that leverages existing infrastructure and AI services:
+
+### Technical Flow
+
+1. **Asset Discovery**: Integration with [FuturePass](https://futurepass.id/) to interrogate user wallets and identify Male/Female Fluf NFT pairs in their holdings.
+
+2. **Pair Selection**: Users can select breeding pairs from their discovered Fluf collection through an intuitive interface.
+
+3. **Image Reference**: The system references transparent PNG images stored on AWS, providing clean visual data for AI processing.
+
+4. **AI Generation**: Selected Fluf images are passed to the ChatGPT API with optimized prompts to generate unique Fluflet offspring images that inherit traits from both parents.
+
+5. **3D Asset Creation**: Generated Fluflet images are processed through a third-party 3D object generation API to create rigged, animated 3D assets suitable for gaming and metaverse applications.
+
+6. **Minting & Distribution**: Final 3D Fluflet assets are minted using [Lum3n](https://www.lum3n.xyz/) infrastructure, ensuring seamless integration with existing NFT marketplaces and wallet systems.
