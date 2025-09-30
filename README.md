@@ -1,6 +1,8 @@
 # BFM
 **Bunny Fuk Mechanics - Community driven Fluf Breeding Concept**
 
+*NOTE - This is a super early brain dump, seeking input from the Flufworld community and beyond.*
+
 |                             Male                             |                            Female                            |                           Fluflet                            |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | <img width="100%" height="300px" alt="QmTQ68Jc9Kbq2GU82yu687uSHucZ3CcsjU9UR2E2tnibRg" src="https://github.com/user-attachments/assets/0c8a695b-7b42-45a9-a3ae-c7cb5308a298" style="display: block; margin: 0 auto; object-fit: cover;" /> | <img width="100%" height="300px" alt="mushy" src="https://github.com/user-attachments/assets/e04fd1e3-6644-43a1-b79a-01325a41dc18" style="display: block; margin: 0 auto; object-fit: cover;" /> | <img width="100%" height="300px" alt="babyZombie" src="https://github.com/user-attachments/assets/09a4273b-e481-4eb5-89c5-3868c0f0746b" style="display: block; margin: 0 auto; object-fit: cover;" /> |
@@ -98,7 +100,7 @@ The technical implementation follows a streamlined pipeline that leverages exist
 
 ### Technical Flow
 
-1. **Asset Discovery**: Integration with [FuturePass](https://futurepass.id/) to interrogate user wallets and identify Male/Female Fluf NFT pairs in their holdings.
+1. **Asset Discovery**: Integration with FuturePass to interrogate user wallets and identify Male/Female Fluf NFT pairs in their holdings.
 
 2. **Pair Selection**: Users can select breeding pairs from their discovered Fluf collection through an intuitive interface.
 
