@@ -1,1 +1,10 @@
 .DS_Store
+*.sln
+*.csproj
+
+BFM POC/UserSettings
+
+BFM POC/Temp
+BFM POC/Logs
+BFM POC/Library
+BFM POC/Packages/packages-lock.json
