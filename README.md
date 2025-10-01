@@ -96,6 +96,8 @@ Season Supply = (Active Breeding Pairs × Base Rate) × Demand Multiplier
 
 ## Proof of Concept (POC)
 
+![POC.png](images/POC.png)
+
 The technical implementation follows a streamlined pipeline that leverages existing infrastructure and AI services:
 
 ### Technical Flow

@@ -20,22 +20,31 @@ public class BunnyFUKManager : EmberBehaviour
 
     #region FIELDS /////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private string endpoint = "https://api.openai.com/v1/images/edits";
+    
     [BoxGroup("OpenAI"), PlayerPref]
     public string ChatGPT_API_Key = "";
     
-    [Header("Generation Prompt")]
-    [TextArea(3, 5)]
-    public string GenerationPrompt = "A baby Fluflet rabbit that combines traits from these two parent Fluf rabbits. Create a cute, cartoon-like style baby that inherits characteristics from both parents.";
+    [BoxGroup("Generation Prompt"), TextArea(3, 5)]
+    public string FlufletPrompt = "A baby Fluflet rabbit that combines traits from these two parent Fluf rabbits. " +
+                                     "Create a cute, cartoon-like style baby that inherits characteristics from both parents.";
     
-    [Header("UI Components")]
-    public Image Fluf1Image;
-    public Image Fluf2Image;
-    public Image FlufletImage;
-    public TMP_InputField token1Text;
-    public TMP_InputField token2Text;
-    public Button generateButton;
+    [BoxGroup("Generation Prompt"), TextArea(3, 5)]
+    public string BeastPrompt = "A baby Fluflet rabbit that combines traits from these two parent Fluf rabbits. " +
+                                  "Create a cute, cartoon-like style baby that inherits characteristics from both parents.";
     
-    private string endpoint = "https://api.openai.com/v1/images/edits";
+    [BoxGroup("UI Components")]
+    public Image Fluf1Image, Fluf2Image, FlufletImage;
+    
+    [BoxGroup("UI Components")]
+    public TMP_InputField token1Text, token2Text;
+
+    [BoxGroup("UI Components")] 
+    public TMP_Text statusTXT, outputTXT;
+
+    [BoxGroup("UI Components")] public Button flufletButton, beastButton, randomButton;
+    
+    
     
     #endregion
 
@@ -65,11 +74,12 @@ public class BunnyFUKManager : EmberBehaviour
         
         Application.runInBackground = true;
     
-        if (generateButton != null)
-            generateButton.onClick.AddListener(OnGenerateButtonClicked);
+        if (flufletButton != null) flufletButton.onClick.AddListener(OnFlufletButtonClicked);
+        if(beastButton != null) beastButton.onClick.AddListener(OnBeastButtonClicked);
+        if(randomButton != null) randomButton.onClick.AddListener(RandomizeTokens);
         
-        if (token1Text != null) token1Text.text = MathUtil.GetRandomNumber(0,9999).ToString();
-        if (token2Text != null) token2Text.text = MathUtil.GetRandomNumber(0,9999).ToString();
+        
+        RandomizeTokens();
         
     }
 
@@ -77,27 +87,16 @@ public class BunnyFUKManager : EmberBehaviour
 
     #region General ................................................................................................
 
-    #endregion
-
-    #region Event Handlers .........................................................................................
-
-    #endregion
-
-    #endregion
-    
-    
-    
-    
-    
-    public void OnGenerateButtonClicked()
+    private void RandomizeTokens()
     {
-        StartCoroutine(GenerateFlufletCoroutine());
+        if (token1Text != null) token1Text.text = MathUtil.GetRandomNumber(0,9999).ToString();
+        if (token2Text != null) token2Text.text = MathUtil.GetRandomNumber(0,9999).ToString();
     }
     
-    private IEnumerator GenerateFlufletCoroutine()
+    private IEnumerator GenerateFlufletCoroutine(string prompt)
     {
         Log("Starting Fluflet generation process...");
-
+        
         // Step 1: Get Fluf1 metadata and image
         Log($"Fetching Fluf1 (Token ID: {token1Text.text}) metadata...");
         string fluf1ImageUrl = null;
@@ -124,6 +123,7 @@ public class BunnyFUKManager : EmberBehaviour
         {
             Sprite fluf1Sprite = Sprite.Create(fluf1Texture, new Rect(0, 0, fluf1Texture.width, fluf1Texture.height), new Vector2(0.5f, 0.5f));
             Fluf1Image.sprite = fluf1Sprite;
+            Fluf1Image.enabled = true;
             Log("Fluf1 image loaded into UI Image component");
         }
 
@@ -153,12 +153,13 @@ public class BunnyFUKManager : EmberBehaviour
         {
             Sprite fluf2Sprite = Sprite.Create(fluf2Texture, new Rect(0, 0, fluf2Texture.width, fluf2Texture.height), new Vector2(0.5f, 0.5f));
             Fluf2Image.sprite = fluf2Sprite;
+            Fluf2Image.enabled = true;
             Log("Fluf2 image loaded into UI Image component");
         }
 
         // Step 3: Generate Fluflet using OpenAI images/edits endpoint
         Log("Generating Fluflet image with OpenAI images/edits...");
-        yield return StartCoroutine(GenerateImageWithOpenAI(fluf1Texture, fluf2Texture, GenerationPrompt));
+        yield return StartCoroutine(GenerateImageWithOpenAI(fluf1Texture, fluf2Texture, prompt));
 
         Log("Fluflet generation process completed!");
     }
@@ -247,8 +248,7 @@ public class BunnyFUKManager : EmberBehaviour
         form.AddBinaryData("image[]", fluf1Bytes, "fluf1.png", "image/png");
         form.AddBinaryData("image[]", fluf2Bytes, "fluf2.png", "image/png");
         
-        Log($"Sending request to OpenAI images/edits endpoint...");
-        Log($"Request size: {form.data.Length} bytes");
+        Log($"One moment while the Flufs do their thing...");
         
         using (UnityWebRequest request = UnityWebRequest.Post(endpoint, form))
         {
@@ -362,25 +362,51 @@ public class BunnyFUKManager : EmberBehaviour
         {
             Sprite generatedSprite = Sprite.Create(generatedTexture, new Rect(0, 0, generatedTexture.width, generatedTexture.height), new Vector2(0.5f, 0.5f));
             FlufletImage.sprite = generatedSprite;
-            Log("Generated Fluflet image loaded into UI Image component");
+            FlufletImage.enabled = true;
+            Log("Generation Complete.");
         }
         
         // Save to file
         byte[] pngData = generatedTexture.EncodeToPNG();
         string savePath = Path.Combine(Application.dataPath, "GeneratedFluflet.png");
         File.WriteAllBytes(savePath, pngData);
-        Log($"Generated Fluflet saved to: {savePath}");
     }
     
     private void Log(string message)
     {
         Debug.Log($"[POC] {message}");
+        
+        statusTXT.text = message;
     }
     
     private void LogError(string message)
     {
         Debug.LogError($"[POC] {message}");
+        
+        statusTXT.text = "ERROR: " + message;
     }
+    
+    #endregion
+
+    #region Event Handlers .........................................................................................
+
+    private void OnFlufletButtonClicked()
+    {
+        outputTXT.text = "Fluflet: " + token1Text.text + " x " + token2Text.text;
+        
+        StartCoroutine(GenerateFlufletCoroutine(FlufletPrompt));
+    }
+
+    private void OnBeastButtonClicked()
+    {
+        outputTXT.text = "Beast: " + token1Text.text + " x " + token2Text.text;
+        
+        StartCoroutine(GenerateFlufletCoroutine(BeastPrompt));
+    }
+    
+    #endregion
+
+    #endregion
 }
 
 [System.Serializable]
