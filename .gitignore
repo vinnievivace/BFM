@@ -8,3 +8,5 @@ BFM POC/Temp
 BFM POC/Logs
 BFM POC/Library
 BFM POC/Packages/packages-lock.json
+BFM POC/.idea
+BFM POC/obj
