@@ -100,7 +100,7 @@ Season Supply = (Active Breeding Pairs × Base Rate) × Demand Multiplier
 
 The technical implementation follows a streamlined pipeline that leverages existing infrastructure and AI services:
 
-### Technical Flow
+### Concept
 
 1. **Asset Discovery**: Integration with FuturePass to interrogate user wallets and identify Male/Female Fluf NFT pairs in their holdings.
 
@@ -113,3 +113,36 @@ The technical implementation follows a streamlined pipeline that leverages exist
 5. **3D Asset Creation**: Generated Fluflet images are processed through a third-party 3D object generation API to create rigged, animated 3D assets suitable for gaming and metaverse applications.
 
 6. **Minting & Distribution**: Final 3D Fluflet assets are minted using [Lum3n](https://www.lum3n.xyz/) infrastructure, ensuring seamless integration with existing NFT marketplaces and wallet systems.
+
+### Current Functionality
+
+The Unity-based proof of concept currently provides a working breeding simulation with the following features:
+
+**Interactive Breeding Interface:**
+- Simple token ID input system where users can enter Fluf NFT token numbers (0-9999)
+- Support for both Fluf and PartyBear NFTs (using "PB:" prefix for PartyBear tokens)
+- Real-time mode detection that automatically switches between Fluf-Fluf breeding and cross-species breeding
+
+**Multi-Mode Generation System:**
+- **Fluflet Mode**: Standard Fluf-Fluf breeding using custom prompts optimized for cute, cartoon-like offspring
+- **Beast Mode**: Alternative generation style with different aesthetic prompts
+- **Freak Mode**: Cross-species breeding between Fluf and PartyBear NFTs, creating hybrid creatures
+
+**Automated Asset Pipeline:**
+- Fetches parent NFT metadata from Fluf.world and PartyBear APIs
+- Downloads and caches parent images locally for performance
+- Converts IPFS URLs to HTTP format for reliable image access
+- Displays parent images in the UI for visual confirmation
+
+**AI-Powered Offspring Generation:**
+- Integrates with OpenAI's image generation API using parent images as reference
+- Custom prompts for each breeding mode to achieve desired aesthetic outcomes
+- Generates 1024x1024 transparent PNG offspring images
+- Saves generated images locally with descriptive filenames
+
+**User Experience Features:**
+- Random token generator for quick testing and exploration
+- Real-time status updates and error handling
+- Automatic button label updates based on breeding mode
+- Image caching system to avoid repeated downloads
+- Visual feedback showing parent images and generated offspring
