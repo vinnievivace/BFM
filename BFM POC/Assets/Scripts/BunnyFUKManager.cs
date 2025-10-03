@@ -20,7 +20,8 @@ public class BunnyFUKManager : EmberBehaviour
     {
         Fluflet,
         Beast,
-        Freak
+        Freak,
+        Morph
     }
 
     #endregion
@@ -45,6 +46,11 @@ public class BunnyFUKManager : EmberBehaviour
     [BoxGroup("Generation Prompt"), TextArea(3, 5)]
     public string InterSpeciesPrompt = "A baby Fluflet rabbit that combines traits from these two parent creatures - one Fluf rabbit and one PartyBear. " +
                                       "Create a cute, cartoon-like style baby that inherits characteristics from both species, blending rabbit and bear features harmoniously.";
+    
+    [BoxGroup("Generation Prompt"), TextArea(3, 5)]
+    public string MorphPrompt = "A baby Fluflet rabbit that combines traits from this Fluf parent and the provided reference image. " +
+                               "Create a cute, cartoon-like style baby that inherits characteristics from both the Fluf parent and the reference image, blending their features harmoniously. " +
+                               "Note: The reference image must be in PNG, JPG, JPEG, or WEBP format for best results.";
     
     [BoxGroup("UI Components")]
     public Image Fluf1Image, Fluf2Image, FlufletImage;
@@ -118,21 +124,207 @@ public class BunnyFUKManager : EmberBehaviour
     }
     
     /// <summary>
-    /// Checks if either token has PB: prefix indicating interSpecies generation
+    /// Centralized mode detection - determines the current mode based on input values
     /// </summary>
-    /// <returns>True if interSpecies generation should be used</returns>
-    private bool IsInterSpeciesGeneration()
+    /// <returns>The detected mode</returns>
+    private Mode DetectCurrentMode()
     {
-        bool isInterSpecies = token1Text.text.StartsWith("PB:") || token2Text.text.StartsWith("PB:");
+        string token1 = token1Text != null ? token1Text.text : "";
+        string token2 = token2Text != null ? token2Text.text : "";
         
-        if (isInterSpecies)
+        // Check for InterSpecies (PartyBear) mode first
+        if (token1.StartsWith("PB:") || token2.StartsWith("PB:"))
         {
-            ActiveMode = Mode.Freak;
-            UpdateButtonLabels();
+            return Mode.Freak;
         }
         
-        return isInterSpecies;
+        // Check for Morph mode (standard token + URL)
+        if (!token1.StartsWith("PB:") && 
+            !token1.StartsWith("http") && 
+            !token1.StartsWith("ipfs") &&
+            (token2.StartsWith("http") || token2.StartsWith("ipfs")))
+        {
+            return Mode.Morph;
+        }
+        
+        // Default to Fluflet mode
+        return Mode.Fluflet;
     }
+    
+    /// <summary>
+    /// Gets the appropriate prompt for the current mode
+    /// </summary>
+    /// <param name="mode">The mode to get prompt for</param>
+    /// <returns>The prompt string</returns>
+    private string GetPromptForMode(Mode mode)
+    {
+        switch (mode)
+        {
+            case Mode.Fluflet:
+                return FlufletPrompt;
+            case Mode.Beast:
+                return BeastPrompt;
+            case Mode.Freak:
+                return InterSpeciesPrompt;
+            case Mode.Morph:
+                return MorphPrompt;
+            default:
+                return FlufletPrompt;
+        }
+    }
+    
+    /// <summary>
+    /// Gets the display name for output text based on mode and inputs
+    /// </summary>
+    /// <param name="mode">The current mode</param>
+    /// <returns>Formatted display string</returns>
+    private string GetOutputDisplayText(Mode mode)
+    {
+        string token1 = token1Text != null ? token1Text.text : "";
+        string token2 = token2Text != null ? token2Text.text : "";
+        
+        switch (mode)
+        {
+            case Mode.Morph:
+                string displayName = GetFilenameFromUrl(token2);
+                string result = $"{mode}: {token1} x {displayName}";
+                Log($"GetOutputDisplayText - token2: {token2}, displayName: {displayName}, result: {result}");
+                return result;
+            default:
+                return $"{mode}: {token1} x {token2}";
+        }
+    }
+    
+    /// <summary>
+    /// Gets the filename for saving based on mode and inputs
+    /// </summary>
+    /// <param name="mode">The current mode</param>
+    /// <returns>Filename for saving (without extension)</returns>
+    private string GetSaveFilename(Mode mode)
+    {
+        string token1 = token1Text != null ? token1Text.text : "";
+        string token2 = token2Text != null ? token2Text.text : "";
+        
+        switch (mode)
+        {
+            case Mode.Morph:
+                string filename = GetSafeFilenameFromUrl(token2);
+                return $"{token1}x{filename}";
+            default:
+                return $"{mode}_{token1}x{token2}";
+        }
+    }
+    
+    /// <summary>
+    /// Gets a safe filename from URL that can be used in file system (max 15 chars)
+    /// </summary>
+    /// <param name="url">URL to extract safe filename from</param>
+    /// <returns>Safe filename for file system use</returns>
+    private string GetSafeFilenameFromUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+            return "unknown";
+            
+        try
+        {
+            // Try to extract filename from URL
+            int lastSlash = url.LastIndexOf('/');
+            if (lastSlash >= 0 && lastSlash < url.Length - 1)
+            {
+                string filename = url.Substring(lastSlash + 1);
+                
+                // Remove query parameters if present
+                int questionMark = filename.IndexOf('?');
+                if (questionMark > 0)
+                {
+                    filename = filename.Substring(0, questionMark);
+                }
+                
+                // Remove file extension
+                int dotIndex = filename.LastIndexOf('.');
+                if (dotIndex > 0)
+                {
+                    filename = filename.Substring(0, dotIndex);
+                }
+                
+                // Sanitize filename for file system use
+                filename = SanitizeFilename(filename);
+                
+                // Truncate to 15 characters max
+                if (filename.Length > 15)
+                {
+                    filename = filename.Substring(0, 15);
+                }
+                
+                return filename;
+            }
+            
+            // Fallback: use domain name
+            if (url.Contains("://"))
+            {
+                int domainStart = url.IndexOf("://") + 3;
+                int domainEnd = url.IndexOf('/', domainStart);
+                if (domainEnd > domainStart)
+                {
+                    string domain = url.Substring(domainStart, domainEnd - domainStart);
+                    domain = SanitizeFilename(domain);
+                    return domain.Length > 15 ? domain.Substring(0, 15) : domain;
+                }
+            }
+            
+            // Ultimate fallback
+            return "morph";
+        }
+        catch
+        {
+            // Ultimate fallback
+            return "morph";
+        }
+    }
+    
+    /// <summary>
+    /// Sanitizes a string to be safe for use as a filename
+    /// </summary>
+    /// <param name="filename">Filename to sanitize</param>
+    /// <returns>Sanitized filename</returns>
+    private string SanitizeFilename(string filename)
+    {
+        if (string.IsNullOrEmpty(filename))
+            return "unknown";
+            
+        // Replace invalid characters with underscores
+        char[] invalidChars = Path.GetInvalidFileNameChars();
+        foreach (char c in invalidChars)
+        {
+            filename = filename.Replace(c, '_');
+        }
+        
+        // Replace common URL characters that cause issues
+        filename = filename.Replace(":", "_")
+                          .Replace("/", "_")
+                          .Replace("\\", "_")
+                          .Replace("?", "_")
+                          .Replace("*", "_")
+                          .Replace("<", "_")
+                          .Replace(">", "_")
+                          .Replace("|", "_");
+        
+        // Remove multiple consecutive underscores
+        while (filename.Contains("__"))
+        {
+            filename = filename.Replace("__", "_");
+        }
+        
+        // Remove leading/trailing underscores
+        filename = filename.Trim('_');
+        
+        // Ensure it's not empty after sanitization
+        if (string.IsNullOrEmpty(filename))
+            return "unknown";
+            
+        return filename;
+    }
+    
     
     /// <summary>
     /// Updates button labels based on the current ActiveMode
@@ -150,6 +342,19 @@ public class BunnyFUKManager : EmberBehaviour
             {
                 var beastText = beastButton.GetComponentInChildren<TMP_Text>();
                 if (beastText != null) beastText.text = "FREAK";
+            }
+        }
+        else if (ActiveMode == Mode.Morph)
+        {
+            if (flufletButton != null)
+            {
+                var flufletText = flufletButton.GetComponentInChildren<TMP_Text>();
+                if (flufletText != null) flufletText.text = "MORPH";
+            }
+            if (beastButton != null)
+            {
+                var beastText = beastButton.GetComponentInChildren<TMP_Text>();
+                if (beastText != null) beastText.text = "MORPH";
             }
         }
         else
@@ -186,7 +391,31 @@ public class BunnyFUKManager : EmberBehaviour
     }
     
     /// <summary>
-    /// Checks current input values and updates mode accordingly
+    /// Applies Morph mode scaling to Fluf2Image (scaled down to 0.5)
+    /// </summary>
+    private void ApplyMorphImageStyling()
+    {
+        if (Fluf2Image != null)
+        {
+            // Scale down to 0.5
+            Fluf2Image.transform.localScale = Vector3.one * 0.5f;
+        }
+    }
+    
+    /// <summary>
+    /// Resets Fluf2Image scaling to default (normal scale 1.0)
+    /// </summary>
+    private void ResetImageStyling()
+    {
+        if (Fluf2Image != null)
+        {
+            // Reset to normal scale
+            Fluf2Image.transform.localScale = Vector3.one;
+        }
+    }
+    
+    /// <summary>
+    /// Checks current input values and updates mode accordingly using centralized detection
     /// </summary>
     private void CheckAndUpdateMode()
     {
@@ -204,18 +433,26 @@ public class BunnyFUKManager : EmberBehaviour
             previousToken2 = currentToken2;
         }
         
-        bool hasPB = currentToken1.StartsWith("PB:") || currentToken2.StartsWith("PB:");
+        // Use centralized mode detection
+        Mode detectedMode = DetectCurrentMode();
         
-        if (hasPB && ActiveMode != Mode.Freak)
+        // Only update if mode has changed
+        if (detectedMode != ActiveMode)
         {
-            ActiveMode = Mode.Freak;
+            // Reset image styling when switching away from Morph
+            if (ActiveMode == Mode.Morph)
+            {
+                ResetImageStyling();
+            }
+            
+            ActiveMode = detectedMode;
             UpdateButtonLabels();
-        }
-        else if (!hasPB && ActiveMode == Mode.Freak)
-        {
-            // Reset to default mode when no PB: prefix is found
-            ActiveMode = Mode.Fluflet;
-            UpdateButtonLabels();
+            
+            // Apply Morph styling if switching to Morph mode
+            if (ActiveMode == Mode.Morph)
+            {
+                ApplyMorphImageStyling();
+            }
         }
     }
     
@@ -232,6 +469,8 @@ public class BunnyFUKManager : EmberBehaviour
                 return "Flufs";
             case Mode.Freak:
                 return "Freaks";
+            case Mode.Morph:
+                return "Morphs";
             default:
                 return "Flufs";
         }
@@ -265,14 +504,13 @@ public class BunnyFUKManager : EmberBehaviour
             FlufletImage.enabled = false;
         }
         
-        // Check if this is an interSpecies generation (PB: prefix)
-        bool isInterSpecies = IsInterSpeciesGeneration();
-        if (isInterSpecies)
-        {
-            Log("InterSpecies generation detected - using InterSpeciesPrompt");
-            prompt = InterSpeciesPrompt;
-            outputTXT.text = $"{ActiveMode}: {token1Text.text} x {token2Text.text}";
-        }
+        // Use the centralized mode detection and prompt system
+        Mode detectedMode = DetectCurrentMode();
+        ActiveMode = detectedMode;
+        prompt = GetPromptForMode(ActiveMode);
+        
+        Log($"{ActiveMode} generation detected - using {ActiveMode} prompt");
+        // Output text already set by button handler
         
         // Step 1: Get Parent1 metadata and image
         Log($"Fetching Parent1 (Token ID: {token1Text.text}) metadata...");
@@ -298,20 +536,39 @@ public class BunnyFUKManager : EmberBehaviour
         // Load Parent1 image into UI Image component
         LoadTextureIntoUI(parent1Texture, Fluf1Image, "Parent1 image loaded into UI Image component");
 
-        // Step 2: Get Parent2 metadata and image
-        Log($"Fetching Parent2 (Token ID: {token2Text.text}) metadata...");
-        string parent2ImageUrl = null;
-        yield return StartCoroutine(GetTokenImageUrl(token2Text.text, (url) => parent2ImageUrl = url));
-        
-        if (string.IsNullOrEmpty(parent2ImageUrl))
-        {
-            LogError($"Failed to get Parent2 image URL for token {token2Text.text}!");
-            yield break;
-        }
-
-        Log("Downloading Parent2 image...");
+        // Step 2: Get Parent2 image (different logic for Morph mode)
         Texture2D parent2Texture = null;
-        yield return StartCoroutine(DownloadImageWithCache(parent2ImageUrl, token2Text.text, (texture) => parent2Texture = texture));
+        
+        if (ActiveMode == Mode.Morph)
+        {
+            // For Morph mode, token2Text is already a URL
+            Log($"Downloading Parent2 image from URL: {token2Text.text}");
+            
+            // Check format before attempting download
+            if (!IsSupportedImageFormat(token2Text.text))
+            {
+                LogError($"Morph mode requires PNG, JPG, JPEG, or WEBP images. The provided URL appears to be a GIF or unsupported format: {token2Text.text}");
+                yield break;
+            }
+            
+            yield return StartCoroutine(DownloadImageWithMorphCache(token2Text.text, (texture) => parent2Texture = texture));
+        }
+        else
+        {
+            // For other modes, fetch metadata first
+            Log($"Fetching Parent2 (Token ID: {token2Text.text}) metadata...");
+            string parent2ImageUrl = null;
+            yield return StartCoroutine(GetTokenImageUrl(token2Text.text, (url) => parent2ImageUrl = url));
+            
+            if (string.IsNullOrEmpty(parent2ImageUrl))
+            {
+                LogError($"Failed to get Parent2 image URL for token {token2Text.text}!");
+                yield break;
+            }
+
+            Log("Downloading Parent2 image...");
+            yield return StartCoroutine(DownloadImageWithCache(parent2ImageUrl, token2Text.text, (texture) => parent2Texture = texture));
+        }
         
         if (parent2Texture == null)
         {
@@ -456,7 +713,7 @@ public class BunnyFUKManager : EmberBehaviour
     }
     
     /// <summary>
-    /// Gets the result file path for a generated image
+    /// Gets the result file path for a generated image using centralized naming
     /// </summary>
     /// <returns>Result file path</returns>
     private string GetResultFilePath()
@@ -469,7 +726,7 @@ public class BunnyFUKManager : EmberBehaviour
             Directory.CreateDirectory(folder);
         }
         
-        string fileName = $"{ActiveMode}_{token1Text.text}x{token2Text.text}.png";
+        string fileName = GetSaveFilename(ActiveMode) + ".png";
         return Path.Combine(folder, fileName);
     }
     
@@ -480,6 +737,14 @@ public class BunnyFUKManager : EmberBehaviour
     /// <param name="callback">Callback with the downloaded texture</param>
     private IEnumerator DownloadImage(string url, System.Action<Texture2D> callback)
     {
+        // Check if the URL points to a supported image format
+        if (!IsSupportedImageFormat(url))
+        {
+            LogError($"Unsupported image format for URL: {url}. Supported formats: PNG, JPG, JPEG, WEBP");
+            callback(null);
+            yield break;
+        }
+        
         using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(url))
         {
             yield return request.SendWebRequest();
@@ -493,8 +758,130 @@ public class BunnyFUKManager : EmberBehaviour
             else
             {
                 LogError($"Failed to download image from {url}: {request.error}");
+                if (request.downloadHandler != null && !string.IsNullOrEmpty(request.downloadHandler.text))
+                {
+                    LogError($"Download Handler Error: {request.downloadHandler.text}");
+                }
                 callback(null);
             }
+        }
+    }
+    
+    /// <summary>
+    /// Checks if the URL points to a supported image format
+    /// </summary>
+    /// <param name="url">URL to check</param>
+    /// <returns>True if the format is supported</returns>
+    private bool IsSupportedImageFormat(string url)
+    {
+        string lowerUrl = url.ToLower();
+        
+        // Check for explicit file extensions
+        if (lowerUrl.EndsWith(".png") || 
+            lowerUrl.EndsWith(".jpg") || 
+            lowerUrl.EndsWith(".jpeg") || 
+            lowerUrl.EndsWith(".webp"))
+        {
+            return true;
+        }
+        
+        // Check for URLs with query parameters
+        if (lowerUrl.Contains(".png?") ||
+            lowerUrl.Contains(".jpg?") ||
+            lowerUrl.Contains(".jpeg?") ||
+            lowerUrl.Contains(".webp?"))
+        {
+            return true;
+        }
+        
+        // Check for common image service patterns that don't have explicit extensions
+        // YouTube thumbnails, Imgur, etc.
+        if (lowerUrl.Contains("ytimg.com") ||           // YouTube thumbnails
+            lowerUrl.Contains("imgur.com") ||           // Imgur
+            lowerUrl.Contains("i.redd.it") ||           // Reddit images
+            lowerUrl.Contains("cdn.discordapp.com") ||  // Discord
+            lowerUrl.Contains("media.tenor.com") ||     // Tenor GIFs (though we don't support GIF)
+            lowerUrl.Contains("pinata.cloud") ||        // IPFS gateways
+            lowerUrl.Contains("cloudinary.com") ||      // Cloudinary
+            lowerUrl.Contains("amazonaws.com"))         // AWS S3
+        {
+            return true;
+        }
+        
+        // Check for common image filename patterns
+        if (lowerUrl.Contains("image") || 
+            lowerUrl.Contains("img") || 
+            lowerUrl.Contains("photo") ||
+            lowerUrl.Contains("picture") ||
+            lowerUrl.Contains("avatar") ||
+            lowerUrl.Contains("thumbnail"))
+        {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /// <summary>
+    /// Extracts the filename from a URL for cleaner logging (truncated to 15 chars)
+    /// </summary>
+    /// <param name="url">URL to extract filename from</param>
+    /// <returns>Short filename for display</returns>
+    private string GetFilenameFromUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url))
+            return "Unknown";
+            
+        try
+        {
+            // Try to extract filename from URL
+            int lastSlash = url.LastIndexOf('/');
+            if (lastSlash >= 0 && lastSlash < url.Length - 1)
+            {
+                string filename = url.Substring(lastSlash + 1);
+                
+                // Remove query parameters if present
+                int questionMark = filename.IndexOf('?');
+                if (questionMark > 0)
+                {
+                    filename = filename.Substring(0, questionMark);
+                }
+                
+                // Remove file extension for display purposes
+                int dotIndex = filename.LastIndexOf('.');
+                if (dotIndex > 0)
+                {
+                    filename = filename.Substring(0, dotIndex);
+                }
+                
+                // Truncate to 15 characters max
+                if (filename.Length > 15)
+                {
+                    filename = filename.Substring(0, 15);
+                }
+                
+                return filename;
+            }
+            
+            // Fallback: use domain name or truncate URL
+            if (url.Contains("://"))
+            {
+                int domainStart = url.IndexOf("://") + 3;
+                int domainEnd = url.IndexOf('/', domainStart);
+                if (domainEnd > domainStart)
+                {
+                    string domain = url.Substring(domainStart, domainEnd - domainStart);
+                    return domain.Length > 15 ? domain.Substring(0, 15) : domain;
+                }
+            }
+            
+            // Ultimate fallback: truncate URL
+            return url.Length > 15 ? url.Substring(0, 15) : url;
+        }
+        catch
+        {
+            // Ultimate fallback
+            return "image";
         }
     }
     
@@ -530,6 +917,20 @@ public class BunnyFUKManager : EmberBehaviour
                 callback(null);
             }
         }));
+    }
+    
+    /// <summary>
+    /// Downloads an image for Morph mode without caching the source (only used for generation)
+    /// </summary>
+    /// <param name="url">URL to download from</param>
+    /// <param name="callback">Callback with the downloaded texture</param>
+    private IEnumerator DownloadImageWithMorphCache(string url, System.Action<Texture2D> callback)
+    {
+        // Convert IPFS URL to HTTP if needed
+        string httpUrl = ConvertIPFSUrlToHttp(url);
+        
+        // Download the image directly without caching (source images aren't saved for Morph mode)
+        yield return StartCoroutine(DownloadImage(httpUrl, callback));
     }
     
     /// <summary>
@@ -770,27 +1171,53 @@ public class BunnyFUKManager : EmberBehaviour
     }
 
     /// <summary>
-    /// Handles Fluflet button click - generates a Fluflet using FlufletPrompt
+    /// Handles Fluflet button click - generates using appropriate mode and prompt
     /// </summary>
     private void OnFlufletButtonClicked()
     {
-        ActiveMode = Mode.Fluflet;
-        UpdateButtonLabels();
-        outputTXT.text = $"{ActiveMode}: {token1Text.text} x {token2Text.text}";
+        Mode detectedMode = DetectCurrentMode();
         
-        StartCoroutine(GenerateFlufletCoroutine(FlufletPrompt));
+        // Override detected mode if it's Beast mode (button-specific behavior)
+        if (detectedMode == Mode.Fluflet)
+        {
+            ActiveMode = Mode.Fluflet;
+        }
+        else
+        {
+            ActiveMode = detectedMode;
+        }
+        
+        UpdateButtonLabels();
+        string outputText = GetOutputDisplayText(ActiveMode);
+        outputTXT.text = outputText;
+        Log($"Fluflet button handler set outputTXT to: {outputText}");
+        
+        string prompt = GetPromptForMode(ActiveMode);
+        StartCoroutine(GenerateFlufletCoroutine(prompt));
     }
 
     /// <summary>
-    /// Handles Beast button click - generates a Beast using BeastPrompt
+    /// Handles Beast button click - generates using appropriate mode and prompt
     /// </summary>
     private void OnBeastButtonClicked()
     {
-        ActiveMode = Mode.Beast;
-        UpdateButtonLabels();
-        outputTXT.text = $"{ActiveMode}: {token1Text.text} x {token2Text.text}";
+        Mode detectedMode = DetectCurrentMode();
         
-        StartCoroutine(GenerateFlufletCoroutine(BeastPrompt));
+        // Override detected mode if it's Fluflet mode (button-specific behavior)
+        if (detectedMode == Mode.Fluflet)
+        {
+            ActiveMode = Mode.Beast;
+        }
+        else
+        {
+            ActiveMode = detectedMode;
+        }
+        
+        UpdateButtonLabels();
+        outputTXT.text = GetOutputDisplayText(ActiveMode);
+        
+        string prompt = GetPromptForMode(ActiveMode);
+        StartCoroutine(GenerateFlufletCoroutine(prompt));
     }
     
     #endregion
