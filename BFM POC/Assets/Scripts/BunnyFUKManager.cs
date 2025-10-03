@@ -7,6 +7,7 @@ using System.IO;
 using EmberAI;
 using EmberAI.Attributes;
 using EmberAI.Core.Util;
+using BFM.OpenAI;
 
 public class BunnyFUKManager : EmberBehaviour
 {
@@ -1223,17 +1224,4 @@ public class BunnyFUKManager : EmberBehaviour
     #endregion
 
     #endregion
-}
-
-[System.Serializable]
-public class OpenAIResponse
-{
-    public OpenAIImageData[] data;
-}
-
-[System.Serializable]
-public class OpenAIImageData
-{
-    public string url;
-    public string b64_json;
 }
